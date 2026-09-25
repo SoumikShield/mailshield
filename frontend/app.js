@@ -253,46 +253,6 @@ function renderThreatDistribution(
         `;
 
 
-    threatLegendElement.innerHTML = `
-
-        <div class="legend-item">
-
-            <span class="legend-dot safe-dot"></span>
-
-            <div>
-                <strong>${safe}</strong>
-                <span>Safe</span>
-            </div>
-
-        </div>
-
-
-        <div class="legend-item">
-
-            <span class="legend-dot warning-dot"></span>
-
-            <div>
-                <strong>${suspicious}</strong>
-                <span>Suspicious</span>
-            </div>
-
-        </div>
-
-
-        <div class="legend-item">
-
-            <span class="legend-dot danger-dot"></span>
-
-            <div>
-                <strong>${malicious}</strong>
-                <span>Malicious</span>
-            </div>
-
-        </div>
-
-    `;
-}
-
 
 // ========================================
 // HIGH RISK ACTIVITY
@@ -875,18 +835,12 @@ function setupUpload() {
 // START
 // ========================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+loadDashboard();
+setupUpload();
+setupRefresh();
 
-        loadDashboard();
-
-        setupUpload();
-
-        setInterval(
-            loadDashboard,
-            30000
-        );
-
-    }
+setInterval(
+    loadDashboard,
+    30000
 );
+};
