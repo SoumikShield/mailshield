@@ -23,7 +23,7 @@ const highRiskActivityElement =
     document.getElementById("highRiskActivity");
 
 const threatChartElement =
-    document.getElementById("threatChart");
+    document.getElementById("threatDonut");
 
 const threatLegendElement =
     document.getElementById("threatLegend");
@@ -239,7 +239,7 @@ function renderThreatDistribution(
         (malicious / total) * 360;
 
 
-    threatChartElement.style.background =
+    document.getElementById("threatDonut").style.background =
         `
         conic-gradient(
             var(--safe) 0deg ${safeDegrees}deg,
