@@ -17,7 +17,7 @@ const maliciousEmailsElement =
     document.getElementById("maliciousEmails");
 
 const recentInvestigationsElement =
-    document.getElementById("recentInvestigations");
+    document.getElementById("investigationTable");
 
 const highRiskActivityElement =
     document.getElementById("highRiskActivity");
@@ -26,7 +26,7 @@ const threatChartElement =
     document.getElementById("threatDonut");
 
 const threatLegendElement =
-    document.getElementById("threatLegend");
+    document.getElementById("safeLegend");
 
 const uploadEmailButton =
     document.getElementById("uploadEmailButton");
