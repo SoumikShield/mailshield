@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="MailShield Email Threat Detection and Investigation Platform"
+    >
+
+    <title>MailShield — Security Operations Center</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="app-shell">
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <aside class="sidebar">
+
+            <div class="brand">
+
+                <div class="brand-mark">
+                    MS
+                </div>
+
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        MAILSHIELD
+                    </div>
+
+                    <div class="brand-subtitle">
+                        EMAIL DEFENSE GRID
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <nav class="navigation">
+
+                <div class="nav-section-title">
+                    COMMAND
+                </div>
+
+                <a
+                    href="#"
+                    class="nav-item active"
+                >
+                    <span class="nav-icon">◈</span>
+                    <span>Command Center</span>
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌁</span>
+                    <span>Investigations</span>
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">△</span>
+                    <span>Threat Intelligence</span>
+                </a>
+
+
+                <div class="nav-section-title">
+                    ANALYSIS
+                </div>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">✦</span>
+                    <span>Email Analyzer</span>
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌬</span>
+                    <span>Authentication</span>
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">◎</span>
+                    <span>URL Intelligence</span>
+                </a>
+
+
+                <div class="nav-section-title">
+                    SYSTEM
+                </div>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⚙</span>
+                    <span>Configuration</span>
+                </a>
+
+
+            </nav>
+
+
+            <div class="sidebar-footer">
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    <div>
+
+                        <div class="status-title">
+                            SYSTEM ONLINE
+                        </div>
+
+                        <div class="status-detail">
+                            All engines operational
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="version">
+                    MAILSHIELD v1.0
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================================
+             MAIN CONTENT
+        ========================================== -->
+
+        <main class="main-content">
+
+
+            <!-- TOP BAR -->
+
+            <header class="topbar">
+
+                <div class="mobile-brand">
+                    MAILSHIELD
+                </div>
+
+
+                <div class="topbar-left">
+
+                    <div class="breadcrumb">
+                        COMMAND CENTER
+                    </div>
+
+                    <div class="live-indicator">
+                        <span></span>
+                        LIVE MONITORING
+                    </div>
+
+                </div>
+
+
+                <div class="topbar-right">
+
+                    <button
+                        class="icon-button"
+                        title="Notifications"
+                    >
+                        ◌
+                    </button>
+
+
+                    <div class="analyst-profile">
+
+                        <div class="avatar">
+                            A
+                        </div>
+
+                        <div class="analyst-info">
+
+                            <div class="analyst-name">
+                                SOC ANALYST
+                            </div>
+
+                            <div class="analyst-role">
+                                TIER 1
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================
+                 CONTENT
+            ====================================== -->
+
+            <section class="dashboard-content">
+
+
+                <div class="page-heading">
+
+                    <div>
+
+                        <div class="eyebrow">
+                            SECURITY OPERATIONS
+                        </div>
+
+                        <h1>
+                            Threat Command Center
+                        </h1>
+
+                        <p>
+                            Real-time email threat visibility and investigation telemetry.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="upload-button"
+                        id="uploadButton"
+                    >
+                        <span>+</span>
+                        Analyze Email
+                    </button>
+
+                </div>
+
+
+                <!-- =================================
+                     KPI CARDS
+                ================================== -->
+
+                <section class="metrics-grid">
+
+
+                    <article class="metric-card">
+
+                        <div class="metric-header">
+
+                            <span class="metric-label">
+                                EMAILS ANALYZED
+                            </span>
+
+                            <span class="metric-icon">
+                                ◈
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="metric-value"
+                            id="totalEmails"
+                        >
+                            —
+                        </div>
+
+                        <div class="metric-footer">
+                            Total investigation volume
+                        </div>
+
+                    </article>
+
+
+                    <article class="metric-card safe">
+
+                        <div class="metric-header">
+
+                            <span class="metric-label">
+                                SAFE
+                            </span>
+
+                            <span class="metric-icon">
+                                ✓
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="metric-value"
+                            id="safeEmails"
+                        >
+                            —
+                        </div>
+
+                        <div class="metric-footer">
+                            No significant indicators
+                        </div>
+
+                    </article>
+
+
+                    <article class="metric-card warning">
+
+                        <div class="metric-header">
+
+                            <span class="metric-label">
+                                SUSPICIOUS
+                            </span>
+
+                            <span class="metric-icon">
+                                !
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="metric-value"
+                            id="suspiciousEmails"
+                        >
+                            —
+                        </div>
+
+                        <div class="metric-footer">
+                            Requires analyst review
+                        </div>
+
+                    </article>
+
+
+                    <article class="metric-card danger">
+
+                        <div class="metric-header">
+
+                            <span class="metric-label">
+                                MALICIOUS
+                            </span>
+
+                            <span class="metric-icon">
+                                ×
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="metric-value"
+                            id="maliciousEmails"
+                        >
+                            —
+                        </div>
+
+                        <div class="metric-footer">
+                            Confirmed threat indicators
+                        </div>
+
+                    </article>
+
+
+                </section>
+
+
+                <!-- =================================
+                     ANALYTICS ROW
+                ================================== -->
+
+                <section class="analytics-grid">
+
+
+                    <!-- THREAT DISTRIBUTION -->
+
+                    <article class="panel distribution-panel">
+
+                        <div class="panel-header">
+
+                            <div>
+
+                                <div class="panel-kicker">
+                                    TELEMETRY
+                                </div>
+
+                                <h2>
+                                    Threat Distribution
+                                </h2>
+
+                            </div>
+
+                            <span class="panel-live">
+                                LIVE
+                            </span>
+
+                        </div>
+
+
+                        <div class="distribution-content">
+
+                            <div class="donut-wrapper">
+
+                                <div
+                                    class="donut"
+                                    id="threatDonut"
+                                >
+
+                                    <div class="donut-center">
+
+                                        <strong id="donutTotal">
+                                            —
+                                        </strong>
+
+                                        <span>
+                                            EVENTS
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="legend">
+
+                                <div class="legend-item">
+
+                                    <span class="legend-marker safe-marker"></span>
+
+                                    <div>
+                                        <strong>Safe</strong>
+                                        <span id="safeLegend">—</span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="legend-item">
+
+                                    <span class="legend-marker suspicious-marker"></span>
+
+                                    <div>
+                                        <strong>Suspicious</strong>
+                                        <span id="suspiciousLegend">—</span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="legend-item">
+
+                                    <span class="legend-marker malicious-marker"></span>
+
+                                    <div>
+                                        <strong>Malicious</strong>
+                                        <span id="maliciousLegend">—</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- RISK OVERVIEW -->
+
+                    <article class="panel risk-panel">
+
+                        <div class="panel-header">
+
+                            <div>
+
+                                <div class="panel-kicker">
+                                    PRIORITY QUEUE
+                                </div>
+
+                                <h2>
+                                    High Risk Activity
+                                </h2>
+
+                            </div>
+
+                            <span
+                                class="risk-count"
+                                id="highRiskCount"
+                            >
+                                —
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-visual">
+
+                            <div class="risk-ring">
+
+                                <div class="risk-ring-inner">
+
+                                    <span>
+                                        HIGH
+                                    </span>
+
+                                    <strong>
+                                        RISK
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="risk-copy">
+
+                                <div class="risk-title">
+                                    Investigation queue
+                                </div>
+
+                                <p>
+                                    Emails requiring elevated analyst attention based on MailShield risk analysis.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                </section>
+
+
+                <!-- =================================
+                     RECENT INVESTIGATIONS
+                ================================== -->
+
+                <section class="panel investigations-panel">
+
+
+                    <div class="panel-header investigations-header">
+
+                        <div>
+
+                            <div class="panel-kicker">
+                                EVENT STREAM
+                            </div>
+
+                            <h2>
+                                Recent Investigations
+                            </h2>
+
+                        </div>
+
+
+                        <button
+                            class="view-all"
+                            id="refreshButton"
+                        >
+                            Refresh
+                            <span>↻</span>
+                        </button>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        SEVERITY
+                                    </th>
+
+                                    <th>
+                                        EMAIL
+                                    </th>
+
+                                    <th>
+                                        SUBJECT
+                                    </th>
+
+                                    <th>
+                                        RISK
+                                    </th>
+
+                                    <th>
+                                        DISPOSITION
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="investigationTable">
+
+                                <tr>
+
+                                    <td
+                                        colspan="5"
+                                        class="loading-row"
+                                    >
+                                        Loading telemetry...
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     SYSTEM TELEMETRY
+                ================================== -->
+
+                <section class="telemetry-strip">
+
+                    <div class="telemetry-item">
+
+                        <span class="telemetry-icon">
+                            ●
+                        </span>
+
+                        <div>
+
+                            <span class="telemetry-label">
+                                SPF ENGINE
+                            </span>
+
+                            <strong>
+                                OPERATIONAL
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="telemetry-item">
+
+                        <span class="telemetry-icon">
+                            ●
+                        </span>
+
+                        <div>
+
+                            <span class="telemetry-label">
+                                DKIM ENGINE
+                            </span>
+
+                            <strong>
+                                OPERATIONAL
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="telemetry-item">
+
+                        <span class="telemetry-icon">
+                            ●
+                        </span>
+
+                        <div>
+
+                            <span class="telemetry-label">
+                                DMARC ENGINE
+                            </span>
+
+                            <strong>
+                                OPERATIONAL
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="telemetry-item">
+
+                        <span class="telemetry-icon">
+                            ●
+                        </span>
+
+                        <div>
+
+                            <span class="telemetry-label">
+                                URLHAUS TI
+                            </span>
+
+                            <strong>
+                                CONNECTED
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                </section>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================
+         UPLOAD MODAL
+    ========================================== -->
+
+    <div
+        class="modal-overlay"
+        id="uploadModal"
+    >
+
+        <div class="upload-modal">
+
+            <button
+                class="modal-close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+
+            <div class="modal-icon">
+                ↑
+            </div>
+
+
+            <div class="panel-kicker">
+                EMAIL ANALYSIS
+            </div>
+
+            <h2>
+                Submit Email for Investigation
+            </h2>
+
+            <p>
+                Upload an RFC-compliant <strong>.eml</strong> file. MailShield will parse and analyze its security indicators.
+            </p>
+
+
+            <label
+                class="drop-zone"
+                id="dropZone"
+            >
+
+                <input
+                    type="file"
+                    id="emailFile"
+                    accept=".eml"
+                    hidden
+                >
+
+                <span class="drop-icon">
+                    ↑
+                </span>
+
+                <strong>
+                    Drop email here
+                </strong>
+
+                <span>
+                    or click to browse
+                </span>
+
+            </label>
+
+
+            <div
+                class="selected-file"
+                id="selectedFile"
+            >
+                No file selected
+            </div>
+
+
+            <button
+                class="analyze-submit"
+                id="analyzeSubmit"
+                disabled
+            >
+                Run Investigation
+            </button>
+
+
+            <div
+                class="upload-result"
+                id="uploadResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

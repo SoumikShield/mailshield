@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MailShield — Investigation</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                MS
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    MailShield
+                </div>
+
+                <div class="brand-version">
+                    SOC PLATFORM
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <div class="nav-label">
+                OPERATIONS
+            </div>
+
+            <a
+                href="index.html"
+                class="nav-item"
+            >
+                <span>⌂</span>
+                Command Center
+            </a>
+
+            <a
+                href="#"
+                class="nav-item active"
+            >
+                <span>◈</span>
+                Investigations
+            </a>
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>◉</span>
+                Threat Intelligence
+            </a>
+
+
+            <div class="nav-label">
+                ANALYSIS
+            </div>
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>✉</span>
+                Email Analyzer
+            </a>
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>✓</span>
+                Authentication
+            </a>
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>↗</span>
+                URL Intelligence
+            </a>
+
+
+            <div class="nav-label">
+                SYSTEM
+            </div>
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>⚙</span>
+                Configuration
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div>
+
+                    <strong>
+                        ENGINES ONLINE
+                    </strong>
+
+                    <small>
+                        MailShield Core
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================
+         MAIN
+    ====================================== -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="eyebrow">
+                    FORENSIC INVESTIGATION
+                </div>
+
+                <h1>
+                    Email Investigation
+                </h1>
+
+            </div>
+
+
+            <a
+                href="index.html"
+                class="back-button"
+            >
+                ← Back to Command Center
+            </a>
+
+        </header>
+
+
+        <!-- LOADING -->
+
+        <section
+            id="loadingState"
+            class="investigation-loading"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <span>
+                Loading investigation...
+            </span>
+
+        </section>
+
+
+        <!-- ERROR -->
+
+        <section
+            id="errorState"
+            class="investigation-error"
+            style="display: none;"
+        >
+
+            <div class="error-icon">
+                !
+            </div>
+
+            <div>
+
+                <strong>
+                    Investigation unavailable
+                </strong>
+
+                <p id="errorMessage">
+                    Unable to load the requested email.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- CONTENT -->
+
+        <div
+            id="investigationContent"
+            style="display: none;"
+        >
+
+            <!-- EMAIL OVERVIEW -->
+
+            <section class="investigation-hero">
+
+                <div>
+
+                    <div class="eyebrow">
+                        EMAIL RECORD
+                    </div>
+
+                    <h2 id="emailSubject">
+                        —
+                    </h2>
+
+                    <div
+                        class="mono-text"
+                        id="emailFilename"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="emailStatus"
+                    class="status-badge"
+                >
+                    ANALYZED
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 RISK OVERVIEW
+            ================================== -->
+
+            <section class="risk-overview">
+
+                <div class="risk-score-card">
+
+                    <div class="risk-card-label">
+                        RISK SCORE
+                    </div>
+
+                    <div
+                        class="risk-score"
+                        id="riskScore"
+                    >
+                        0
+                    </div>
+
+                    <div class="risk-scale">
+
+                        <div
+                            id="riskBar"
+                            class="risk-bar"
+                        ></div>
+
+                    </div>
+
+                    <div
+                        id="riskLevel"
+                        class="risk-level"
+                    >
+                        LOW
+                    </div>
+
+                </div>
+
+
+                <div class="risk-summary-card">
+
+                    <div class="risk-card-label">
+                        FINAL DISPOSITION
+                    </div>
+
+                    <div
+                        id="riskDisposition"
+                        class="risk-disposition"
+                    >
+                        SAFE
+                    </div>
+
+                    <p>
+                        MailShield combined authentication,
+                        sender and URL intelligence to
+                        calculate this assessment.
+                    </p>
+
+                </div>
+
+
+                <div class="risk-summary-card">
+
+                    <div class="risk-card-label">
+                        DETECTION SIGNALS
+                    </div>
+
+                    <div
+                        id="signalCount"
+                        class="signal-count"
+                    >
+                        0
+                    </div>
+
+                    <p>
+                        Individual security indicators
+                        contributing to the risk score.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 INVESTIGATION TIMELINE
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        INVESTIGATION TIMELINE
+                    </span>
+
+                    <span class="card-icon">
+                        FLOW
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="investigationTimeline"
+                    class="investigation-timeline"
+                >
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-marker">
+                            01
+                        </div>
+
+                        <div class="timeline-content">
+
+                            <strong>
+                                Email Received
+                            </strong>
+
+                            <span>
+                                MailShield parsed the email
+                                structure and security headers.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 DETECTION SIGNALS
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        DETECTION SIGNALS
+                    </span>
+
+                    <span class="card-icon">
+                        RISK
+                    </span>
+
+                </div>
+
+                <div
+                    id="signalList"
+                    class="signal-list"
+                >
+
+                    <div class="empty-state">
+                        No risk signals detected.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 MESSAGE / SPF / DKIM / DMARC
+            ================================== -->
+
+            <section class="investigation-grid">
+
+                <!-- MESSAGE -->
+
+                <div class="investigation-card">
+
+                    <div class="card-header">
+
+                        <span>
+                            MESSAGE
+                        </span>
+
+                        <span class="card-icon">
+                            ✉
+                        </span>
+
+                    </div>
+
+                    <div class="data-list">
+
+                        <div class="data-row">
+                            <span>From</span>
+                            <strong id="fromValue">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>To</span>
+                            <strong id="toValue">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Reply-To</span>
+                            <strong id="replyToValue">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Date</span>
+                            <strong id="dateValue">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Message ID</span>
+                            <strong
+                                id="messageIdValue"
+                                class="mono-text"
+                            >
+                                —
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SPF -->
+
+                <div class="investigation-card">
+
+                    <div class="card-header">
+
+                        <span>
+                            SPF
+                        </span>
+
+                        <span class="card-icon">
+                            SPF
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="spfResult"
+                        class="auth-result"
+                    >
+                        —
+                    </div>
+
+                    <div class="data-list">
+
+                        <div class="data-row">
+                            <span>Domain</span>
+                            <strong id="spfDomain">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Sending IP</span>
+                            <strong id="spfIp">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Record Status</span>
+                            <strong id="spfRecordStatus">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DKIM -->
+
+                <div class="investigation-card">
+
+                    <div class="card-header">
+
+                        <span>
+                            DKIM
+                        </span>
+
+                        <span class="card-icon">
+                            DKIM
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="dkimResult"
+                        class="auth-result"
+                    >
+                        —
+                    </div>
+
+                    <div class="data-list">
+
+                        <div class="data-row">
+                            <span>Domain</span>
+                            <strong id="dkimDomain">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Selector</span>
+                            <strong id="dkimSelector">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Algorithm</span>
+                            <strong id="dkimAlgorithm">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>Cryptographic</span>
+                            <strong id="dkimVerified">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DMARC -->
+
+                <div class="investigation-card">
+
+                    <div class="card-header">
+
+                        <span>
+                            DMARC
+                        </span>
+
+                        <span class="card-icon">
+                            DMARC
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="dmarcResult"
+                        class="auth-result"
+                    >
+                        —
+                    </div>
+
+                    <div class="data-list">
+
+                        <div class="data-row">
+                            <span>From Domain</span>
+                            <strong id="dmarcDomain">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>SPF Alignment</span>
+                            <strong id="dmarcSpfAlignment">—</strong>
+                        </div>
+
+                        <div class="data-row">
+                            <span>DKIM Alignment</span>
+                            <strong id="dmarcDkimAlignment">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 SENDER
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        SENDER ANALYSIS
+                    </span>
+
+                    <span class="card-icon">
+                        ID
+                    </span>
+
+                </div>
+
+                <div
+                    id="senderStatus"
+                    class="analysis-banner"
+                >
+                    —
+                </div>
+
+                <div class="analysis-grid">
+
+                    <div class="analysis-item">
+                        <span>From Domain</span>
+                        <strong id="senderFromDomain">—</strong>
+                    </div>
+
+                    <div class="analysis-item">
+                        <span>Reply-To Domain</span>
+                        <strong id="senderReplyDomain">—</strong>
+                    </div>
+
+                    <div class="analysis-item">
+                        <span>Domain Match</span>
+                        <strong id="senderDomainMatch">—</strong>
+                    </div>
+
+                    <div class="analysis-item">
+                        <span>Display Name</span>
+                        <strong id="senderDisplayName">—</strong>
+                    </div>
+
+                    <div class="analysis-item">
+                        <span>Lookalike Detection</span>
+                        <strong id="lookalikeDetection">—</strong>
+                    </div>
+
+                    <div class="analysis-item">
+                        <span>Matched Brand</span>
+                        <strong id="matchedBrand">—</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 URL
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        URL INTELLIGENCE
+                    </span>
+
+                    <span class="card-icon">
+                        URL
+                    </span>
+
+                </div>
+
+                <div class="url-summary">
+
+                    <div class="metric-box">
+
+                        <span>
+                            TOTAL URLS
+                        </span>
+
+                        <strong id="totalUrls">
+                            0
+                        </strong>
+
+                    </div>
+
+                    <div class="metric-box">
+
+                        <span>
+                            SUSPICIOUS
+                        </span>
+
+                        <strong id="suspiciousUrls">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="urlList"
+                    class="url-list"
+                >
+
+                    <div class="empty-state">
+                        No URLs detected.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 ATTACHMENTS
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        ATTACHMENTS
+                    </span>
+
+                    <span class="card-icon">
+                        ATT
+                    </span>
+
+                </div>
+
+                <div
+                    id="attachmentList"
+                    class="attachment-list"
+                >
+
+                    <div class="empty-state">
+                        No attachments detected.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 HEADERS
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        SECURITY HEADERS
+                    </span>
+
+                    <span class="card-icon">
+                        HDR
+                    </span>
+
+                </div>
+
+                <pre
+                    id="securityHeaders"
+                    class="code-panel"
+                >No security headers available.</pre>
+
+            </section>
+
+
+            <!-- =================================
+                 BODY
+            ================================== -->
+
+            <section class="investigation-card full-width">
+
+                <div class="card-header">
+
+                    <span>
+                        MESSAGE BODY
+                    </span>
+
+                    <span class="card-icon">
+                        RAW
+                    </span>
+
+                </div>
+
+                <pre
+                    id="emailBody"
+                    class="email-body"
+                >No message body available.</pre>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="investigation.js"></script>
+
+</body>
+
+</html>
