@@ -1,4 +1,6 @@
-const API_BASE = "https://mailshield-backend-cvev.onrender.com";
+const API_BASE =
+    "https://mailshield-backend-cvev.onrender.com";
+
 
 // ========================================
 // DOM ELEMENTS
@@ -16,23 +18,53 @@ const suspiciousEmailsElement =
 const maliciousEmailsElement =
     document.getElementById("maliciousEmails");
 
-const recentInvestigationsElement =
-    document.getElementById("investigationTable");
-
-const highRiskActivityElement =
-    document.getElementById("highRiskActivity");
-
-const threatChartElement =
+const threatDonutElement =
     document.getElementById("threatDonut");
 
-const threatLegendElement =
+const donutTotalElement =
+    document.getElementById("donutTotal");
+
+const safeLegendElement =
     document.getElementById("safeLegend");
 
-const uploadEmailButton =
-    document.getElementById("uploadEmailButton");
+const suspiciousLegendElement =
+    document.getElementById("suspiciousLegend");
+
+const maliciousLegendElement =
+    document.getElementById("maliciousLegend");
+
+const highRiskCountElement =
+    document.getElementById("highRiskCount");
+
+const investigationTableElement =
+    document.getElementById("investigationTable");
+
+const refreshButton =
+    document.getElementById("refreshButton");
+
+const uploadButton =
+    document.getElementById("uploadButton");
+
+const uploadModal =
+    document.getElementById("uploadModal");
+
+const closeModalButton =
+    document.getElementById("closeModal");
+
+const dropZone =
+    document.getElementById("dropZone");
 
 const emailFileInput =
-    document.getElementById("emailFileInput");
+    document.getElementById("emailFile");
+
+const selectedFileElement =
+    document.getElementById("selectedFile");
+
+const analyzeSubmit =
+    document.getElementById("analyzeSubmit");
+
+const uploadResult =
+    document.getElementById("uploadResult");
 
 
 // ========================================
@@ -57,99 +89,68 @@ function escapeHtml(value) {
 }
 
 
-function formatDisposition(
-    disposition
-) {
+function formatDisposition(value) {
 
-    if (!disposition) {
+    if (!value) {
         return "UNKNOWN";
     }
 
-    return String(disposition)
+    return String(value)
         .toUpperCase();
 }
 
 
-function getRiskClass(
-    value
-) {
+function getDispositionClass(value) {
 
     const normalized =
         String(value || "")
             .toLowerCase();
 
-
-    if (
-        normalized === "safe" ||
-        normalized === "low"
-    ) {
-        return "risk-safe";
+    if (normalized === "safe") {
+        return "safe";
     }
 
-
-    if (
-        normalized === "suspicious" ||
-        normalized === "medium"
-    ) {
-        return "risk-warning";
+    if (normalized === "suspicious") {
+        return "suspicious";
     }
 
-
-    if (
-        normalized === "high"
-    ) {
-        return "risk-high-text";
+    if (normalized === "malicious") {
+        return "malicious";
     }
 
-
-    if (
-        normalized === "malicious" ||
-        normalized === "critical"
-    ) {
-        return "risk-danger";
-    }
-
-
-    return "risk-neutral";
+    return "";
 }
 
 
-function formatDate(
-    value
-) {
+function getSeverityClass(value) {
 
-    if (!value) {
-        return "—";
+    const normalized =
+        String(value || "")
+            .toLowerCase();
+
+    if (
+        normalized === "low" ||
+        normalized === "safe"
+    ) {
+        return "severity-low";
     }
 
-
-    try {
-
-        const date =
-            new Date(value);
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-            return value;
-        }
-
-
-        return date.toLocaleString(
-            [],
-            {
-                dateStyle: "medium",
-                timeStyle: "short"
-            }
-        );
-
-    } catch {
-
-        return value;
+    if (
+        normalized === "medium" ||
+        normalized === "suspicious"
+    ) {
+        return "severity-medium";
     }
+
+    if (
+        normalized === "high" ||
+        normalized === "critical" ||
+        normalized === "malicious"
+    ) {
+        return "severity-critical";
+    }
+
+    return "severity-low";
 }
 
 
@@ -157,28 +158,22 @@ function formatDate(
 // KPI CARDS
 // ========================================
 
-function updateKpis(
-    data
-) {
+function updateKpis(data) {
 
     const counts =
         data.disposition_counts || {};
 
-
     totalEmailsElement.textContent =
-        data.total_emails || 0;
-
+        data.total_emails ?? 0;
 
     safeEmailsElement.textContent =
-        counts.safe || 0;
-
+        counts.safe ?? 0;
 
     suspiciousEmailsElement.textContent =
-        counts.suspicious || 0;
-
+        counts.suspicious ?? 0;
 
     maliciousEmailsElement.textContent =
-        counts.malicious || 0;
+        counts.malicious ?? 0;
 }
 
 
@@ -186,249 +181,104 @@ function updateKpis(
 // THREAT DISTRIBUTION
 // ========================================
 
-function renderThreatDistribution(
-    data
-) {
+function renderThreatDistribution(data) {
 
     const counts =
         data.disposition_counts || {};
 
-
     const safe =
-        counts.safe || 0;
+        counts.safe ?? 0;
 
     const suspicious =
-        counts.suspicious || 0;
+        counts.suspicious ?? 0;
 
     const malicious =
-        counts.malicious || 0;
-
+        counts.malicious ?? 0;
 
     const total =
         safe +
         suspicious +
         malicious;
 
+    if (donutTotalElement) {
+
+        donutTotalElement.textContent =
+            total;
+    }
+
+    if (safeLegendElement) {
+
+        safeLegendElement.textContent =
+            safe;
+    }
+
+    if (suspiciousLegendElement) {
+
+        suspiciousLegendElement.textContent =
+            suspicious;
+    }
+
+    if (maliciousLegendElement) {
+
+        maliciousLegendElement.textContent =
+            malicious;
+    }
+
+    if (!threatDonutElement) {
+        return;
+    }
 
     if (!total) {
 
-        threatChartElement.style.background =
+        threatDonutElement.style.background =
             "conic-gradient(rgba(255,255,255,0.08) 0deg 360deg)";
-
-        threatLegendElement.innerHTML = `
-
-            <div class="legend-empty">
-                No analyzed emails yet.
-            </div>
-
-        `;
 
         return;
     }
 
-
     const safeDegrees =
         (safe / total) * 360;
-
 
     const suspiciousDegrees =
         (suspicious / total) * 360;
 
+    const maliciousStart =
+        safeDegrees +
+        suspiciousDegrees;
 
-    const maliciousDegrees =
-        (malicious / total) * 360;
-
-
-    document.getElementById("threatDonut").style.background =
+    threatDonutElement.style.background =
         `
         conic-gradient(
-            var(--safe) 0deg ${safeDegrees}deg,
+            var(--safe)
+            0deg
+            ${safeDegrees}deg,
+
             var(--warning)
-                ${safeDegrees}deg
-                ${safeDegrees + suspiciousDegrees}deg,
+            ${safeDegrees}deg
+            ${maliciousStart}deg,
+
             var(--danger)
-                ${safeDegrees + suspiciousDegrees}deg
-                ${safeDegrees + suspiciousDegrees + maliciousDegrees}deg
+            ${maliciousStart}deg
+            360deg
         )
         `;
-
+}
 
 
 // ========================================
 // HIGH RISK ACTIVITY
 // ========================================
 
-function renderHighRiskActivity(
-    emails
-) {
+function renderHighRiskActivity(emails) {
 
-    if (!highRiskActivityElement) {
+    if (!highRiskCountElement) {
         return;
     }
 
-
-    if (
-        !emails ||
-        !emails.length
-    ) {
-
-        highRiskActivityElement.innerHTML = `
-
-            <div class="panel-empty">
-
-                <div class="empty-icon">
-                    ✓
-                </div>
-
-                <strong>
-                    No high-risk activity
-                </strong>
-
-                <span>
-                    No analyzed email currently has
-                    a risk score of 50 or higher.
-                </span>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    highRiskActivityElement.innerHTML =
-        emails.map(
-            email => {
-
-                const score =
-                    email.risk_score || 0;
-
-
-                const level =
-                    email.risk_level ||
-                    "unknown";
-
-
-                const disposition =
-                    email.disposition ||
-                    "unknown";
-
-
-                return `
-
-                    <div
-                        class="high-risk-item"
-                        data-email-id="${escapeHtml(
-                            email.id
-                        )}"
-                        tabindex="0"
-                        role="button"
-                    >
-
-                        <div class="high-risk-score">
-
-                            <strong>
-                                ${escapeHtml(score)}
-                            </strong>
-
-                            <span>
-                                RISK
-                            </span>
-
-                        </div>
-
-
-                        <div class="high-risk-details">
-
-                            <strong>
-                                ${escapeHtml(
-                                    email.subject ||
-                                    "(No subject)"
-                                )}
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    email.from ||
-                                    "Unknown sender"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div
-                            class="high-risk-status ${getRiskClass(
-                                disposition
-                            )}"
-                        >
-
-                            ${escapeHtml(
-                                formatDisposition(
-                                    disposition
-                                )
-                            )}
-
-                            <small>
-                                ${escapeHtml(
-                                    level
-                                )}
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                `;
-            }
-        ).join("");
-
-
-    document
-        .querySelectorAll(
-            ".high-risk-item"
-        )
-        .forEach(
-            item => {
-
-                const emailId =
-                    item.dataset.emailId;
-
-
-                item.addEventListener(
-                    "click",
-                    () => {
-
-                        window.location.href =
-                            `investigation.html?id=${encodeURIComponent(
-                                emailId
-                            )}`;
-
-                    }
-                );
-
-
-                item.addEventListener(
-                    "keydown",
-                    event => {
-
-                        if (
-                            event.key === "Enter" ||
-                            event.key === " "
-                        ) {
-
-                            event.preventDefault();
-
-                            item.click();
-
-                        }
-
-                    }
-                );
-
-            }
-        );
+    highRiskCountElement.textContent =
+        Array.isArray(emails)
+            ? emails.length
+            : 0;
 }
 
 
@@ -436,160 +286,149 @@ function renderHighRiskActivity(
 // RECENT INVESTIGATIONS
 // ========================================
 
-function renderRecentInvestigations(
-    emails
-) {
+function renderRecentInvestigations(emails) {
+
+    if (!investigationTableElement) {
+        return;
+    }
 
     if (
-        !emails ||
-        !emails.length
+        !Array.isArray(emails) ||
+        emails.length === 0
     ) {
 
-        recentInvestigationsElement.innerHTML = `
-
-            <div class="table-empty">
-                No investigations available.
-            </div>
-
+        investigationTableElement.innerHTML = `
+            <tr>
+                <td
+                    colspan="5"
+                    class="loading-row"
+                >
+                    No investigations available.
+                </td>
+            </tr>
         `;
 
         return;
     }
 
+    investigationTableElement.innerHTML =
+        emails.map(email => {
 
-    recentInvestigationsElement.innerHTML =
-        emails.map(
-            email => {
+            const id =
+                email.id || "";
 
-                const score =
-                    email.risk_score ?? 0;
+            const level =
+                email.risk_level || "low";
 
+            const disposition =
+                email.disposition || "unknown";
 
-                const disposition =
-                    email.disposition ||
-                    "unknown";
+            const score =
+                email.risk_score ?? 0;
 
+            const severityClass =
+                getSeverityClass(level);
 
-                const level =
-                    email.risk_level ||
-                    "unknown";
+            const dispositionClass =
+                getDispositionClass(disposition);
 
+            return `
+                <tr
+                    class="investigation-row"
+                    data-email-id="${escapeHtml(id)}"
+                    tabindex="0"
+                >
 
-                return `
-
-                    <div
-                        class="investigation-row"
-                        data-email-id="${escapeHtml(
-                            email.id
-                        )}"
-                        tabindex="0"
-                        role="button"
-                    >
-
-                        <div class="investigation-subject">
-
-                            <strong>
-                                ${escapeHtml(
-                                    email.subject ||
-                                    "(No subject)"
-                                )}
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    email.from ||
-                                    "Unknown sender"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="investigation-disposition">
-
+                    <td>
+                        <span
+                            class="severity ${severityClass}"
+                        >
                             <span
-                                class="${getRiskClass(
+                                class="severity-dot"
+                            ></span>
+
+                            ${escapeHtml(
+                                formatDisposition(level)
+                            )}
+                        </span>
+                    </td>
+
+                    <td class="email-cell">
+                        <span class="email-sender">
+                            ${escapeHtml(
+                                email.from ||
+                                "Unknown sender"
+                            )}
+                        </span>
+                    </td>
+
+                    <td class="subject-cell">
+                        ${escapeHtml(
+                            email.subject ||
+                            "(No subject)"
+                        )}
+                    </td>
+
+                    <td class="risk-score">
+                        ${escapeHtml(score)}
+                    </td>
+
+                    <td>
+                        <span
+                            class="disposition ${dispositionClass}"
+                        >
+                            ${escapeHtml(
+                                formatDisposition(
                                     disposition
-                                )}"
-                            >
-                                ${escapeHtml(
-                                    formatDisposition(
-                                        disposition
-                                    )
-                                )}
-                            </span>
+                                )
+                            )}
+                        </span>
+                    </td>
 
-                        </div>
-
-
-                        <div class="investigation-risk">
-
-                            <strong>
-                                ${escapeHtml(score)}
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(level)}
-                            </span>
-
-                        </div>
-
-
-                        <div class="open-investigation">
-                            Open →
-                        </div>
-
-                    </div>
-
-                `;
-            }
-        ).join("");
-
+                </tr>
+            `;
+        }).join("");
 
     document
         .querySelectorAll(
             ".investigation-row"
         )
-        .forEach(
-            row => {
+        .forEach(row => {
 
-                const emailId =
-                    row.dataset.emailId;
+            const emailId =
+                row.dataset.emailId;
 
+            row.addEventListener(
+                "click",
+                () => {
 
-                row.addEventListener(
-                    "click",
-                    () => {
-
-                        window.location.href =
-                            `investigation.html?id=${encodeURIComponent(
-                                emailId
-                            )}`;
-
+                    if (!emailId) {
+                        return;
                     }
-                );
 
+                    window.location.href =
+                        `investigation.html?id=${encodeURIComponent(
+                            emailId
+                        )}`;
+                }
+            );
 
-                row.addEventListener(
-                    "keydown",
-                    event => {
+            row.addEventListener(
+                "keydown",
+                event => {
 
-                        if (
-                            event.key === "Enter" ||
-                            event.key === " "
-                        ) {
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
 
-                            event.preventDefault();
+                        event.preventDefault();
 
-                            row.click();
-
-                        }
-
+                        row.click();
                     }
-                );
-
-            }
-        );
+                }
+            );
+        });
 }
 
 
@@ -606,39 +445,27 @@ async function loadDashboard() {
                 `${API_BASE}/emails/dashboard/summary`
             );
 
-
         if (!response.ok) {
 
             throw new Error(
                 `Dashboard API returned ${response.status}`
             );
-
         }
-
 
         const data =
             await response.json();
 
+        updateKpis(data);
 
-        updateKpis(
-            data
-        );
-
-
-        renderThreatDistribution(
-            data
-        );
-
+        renderThreatDistribution(data);
 
         renderHighRiskActivity(
             data.high_risk_emails || []
         );
 
-
         renderRecentInvestigations(
             data.recent_emails || []
         );
-
 
     } catch (error) {
 
@@ -647,186 +474,421 @@ async function loadDashboard() {
             error
         );
 
-
-        if (highRiskActivityElement) {
-
-            highRiskActivityElement.innerHTML = `
-
-                <div class="panel-empty">
-
-                    <div class="empty-icon">
-                        !
-                    </div>
-
-                    <strong>
-                        Dashboard data unavailable
-                    </strong>
-
-                    <span>
-                        Unable to connect to the
-                        MailShield API.
-                    </span>
-
-                </div>
-
-            `;
-
+        if (totalEmailsElement) {
+            totalEmailsElement.textContent = "—";
         }
 
+        if (safeEmailsElement) {
+            safeEmailsElement.textContent = "—";
+        }
 
-        recentInvestigationsElement.innerHTML = `
+        if (suspiciousEmailsElement) {
+            suspiciousEmailsElement.textContent = "—";
+        }
 
-            <div class="table-empty">
+        if (maliciousEmailsElement) {
+            maliciousEmailsElement.textContent = "—";
+        }
 
-                Unable to load investigations.
+        if (highRiskCountElement) {
+            highRiskCountElement.textContent = "—";
+        }
 
-            </div>
+        if (investigationTableElement) {
 
-        `;
+            investigationTableElement.innerHTML = `
+                <tr>
+                    <td
+                        colspan="5"
+                        class="loading-row"
+                    >
+                        Unable to load investigations.
+                    </td>
+                </tr>
+            `;
+        }
     }
 }
 
 
 // ========================================
-// EMAIL UPLOAD
+// UPLOAD MODAL
 // ========================================
 
-function setupUpload() {
+function openUploadModal() {
+
+    if (!uploadModal) {
+        return;
+    }
+
+    uploadModal.classList.add("open");
+}
+
+
+function closeUploadModal() {
+
+    if (!uploadModal) {
+        return;
+    }
+
+    uploadModal.classList.remove("open");
+}
+
+
+function resetUploadState() {
+
+    if (selectedFileElement) {
+
+        selectedFileElement.textContent =
+            "No file selected";
+    }
+
+    if (uploadResult) {
+
+        uploadResult.textContent =
+            "";
+    }
+
+    if (emailFileInput) {
+
+        emailFileInput.value =
+            "";
+    }
+
+    if (analyzeSubmit) {
+
+        analyzeSubmit.disabled =
+            true;
+
+        analyzeSubmit.textContent =
+            "Run Investigation";
+    }
+}
+
+
+// ========================================
+// FILE SELECTION
+// ========================================
+
+function handleFileSelection(file) {
+
+    if (!file) {
+        return;
+    }
 
     if (
-        !uploadEmailButton ||
-        !emailFileInput
+        !file.name
+            .toLowerCase()
+            .endsWith(".eml")
+    ) {
+
+        alert(
+            "Only .eml files are supported."
+        );
+
+        resetUploadState();
+
+        return;
+    }
+
+    if (selectedFileElement) {
+
+        selectedFileElement.textContent =
+            file.name;
+    }
+
+    if (uploadResult) {
+
+        uploadResult.textContent =
+            "";
+    }
+
+    if (analyzeSubmit) {
+
+        analyzeSubmit.disabled =
+            false;
+    }
+}
+
+
+// ========================================
+// UPLOAD EMAIL
+// ========================================
+
+async function uploadEmail() {
+
+    if (
+        !emailFileInput ||
+        !emailFileInput.files ||
+        !emailFileInput.files.length
     ) {
         return;
     }
 
+    const file =
+        emailFileInput.files[0];
 
-    uploadEmailButton.addEventListener(
-        "click",
-        () => {
+    if (
+        !file.name
+            .toLowerCase()
+            .endsWith(".eml")
+    ) {
 
-            emailFileInput.click();
+        alert(
+            "Only .eml files are supported."
+        );
 
-        }
-    );
+        return;
+    }
 
+    if (analyzeSubmit) {
 
-    emailFileInput.addEventListener(
-        "change",
-        async event => {
+        analyzeSubmit.disabled =
+            true;
 
-            const file =
-                event.target.files[0];
+        analyzeSubmit.textContent =
+            "Analyzing...";
+    }
 
+    if (uploadResult) {
 
-            if (!file) {
-                return;
-            }
+        uploadResult.textContent =
+            "Analyzing email...";
+    }
 
+    try {
 
-            if (
-                !file.name
-                    .toLowerCase()
-                    .endsWith(".eml")
-            ) {
+        const formData =
+            new FormData();
 
-                alert(
-                    "Only .eml files are supported."
-                );
+        formData.append(
+            "file",
+            file
+        );
 
-                emailFileInput.value = "";
-
-                return;
-            }
-
-
-            uploadEmailButton.disabled =
-                true;
-
-
-            uploadEmailButton.textContent =
-                "Analyzing...";
-
-
-            try {
-
-                const formData =
-                    new FormData();
-
-
-                formData.append(
-                    "file",
-                    file
-                );
-
-
-                const response =
-                    await fetch(
-                        `${API_BASE}/emails/upload`,
-                        {
-                            method: "POST",
-                            body: formData
-                        }
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        result.detail ||
-                        "Email upload failed."
-                    );
-
+        const response =
+            await fetch(
+                `${API_BASE}/emails/upload`,
+                {
+                    method: "POST",
+                    body: formData
                 }
+            );
 
+        let result = {};
+
+        try {
+
+            result =
+                await response.json();
+
+        } catch {
+
+            result = {};
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                `Email upload failed (${response.status}).`
+            );
+        }
+
+        if (result.id) {
+
+            window.location.href =
+                `investigation.html?id=${encodeURIComponent(
+                    result.id
+                )}`;
+
+            return;
+        }
+
+        closeUploadModal();
+
+        resetUploadState();
+
+        await loadDashboard();
+
+    } catch (error) {
+
+        console.error(
+            "Upload error:",
+            error
+        );
+
+        if (uploadResult) {
+
+            uploadResult.textContent =
+                error.message ||
+                "Unable to upload email.";
+        }
+
+    } finally {
+
+        if (analyzeSubmit) {
+
+            analyzeSubmit.disabled =
+                !(
+                    emailFileInput &&
+                    emailFileInput.files &&
+                    emailFileInput.files.length
+                );
+
+            analyzeSubmit.textContent =
+                "Run Investigation";
+        }
+    }
+}
+
+
+// ========================================
+// UPLOAD SETUP
+// ========================================
+
+function setupUpload() {
+
+    if (uploadButton) {
+
+        uploadButton.addEventListener(
+            "click",
+            openUploadModal
+        );
+    }
+
+    if (closeModalButton) {
+
+        closeModalButton.addEventListener(
+            "click",
+            () => {
+
+                closeUploadModal();
+
+                resetUploadState();
+            }
+        );
+    }
+
+    if (uploadModal) {
+
+        uploadModal.addEventListener(
+            "click",
+            event => {
 
                 if (
-                    result.id
+                    event.target === uploadModal
                 ) {
 
-                    window.location.href =
-                        `investigation.html?id=${encodeURIComponent(
-                            result.id
-                        )}`;
+                    closeUploadModal();
 
+                    resetUploadState();
+                }
+            }
+        );
+    }
+
+    if (emailFileInput) {
+
+        emailFileInput.addEventListener(
+            "change",
+            event => {
+
+                const file =
+                    event.target.files[0];
+
+                handleFileSelection(file);
+            }
+        );
+    }
+
+    if (dropZone) {
+
+        dropZone.addEventListener(
+            "dragover",
+            event => {
+
+                event.preventDefault();
+
+                dropZone.classList.add(
+                    "dragging"
+                );
+            }
+        );
+
+        dropZone.addEventListener(
+            "dragleave",
+            () => {
+
+                dropZone.classList.remove(
+                    "dragging"
+                );
+            }
+        );
+
+        dropZone.addEventListener(
+            "drop",
+            event => {
+
+                event.preventDefault();
+
+                dropZone.classList.remove(
+                    "dragging"
+                );
+
+                const file =
+                    event.dataTransfer.files[0];
+
+                if (!file) {
                     return;
                 }
 
+                try {
 
-                await loadDashboard();
+                    const dataTransfer =
+                        new DataTransfer();
 
-            } catch (error) {
+                    dataTransfer.items.add(
+                        file
+                    );
 
-                console.error(
-                    "Upload error:",
-                    error
-                );
+                    emailFileInput.files =
+                        dataTransfer.files;
 
+                } catch {
 
-                alert(
-                    error.message ||
-                    "Unable to upload email."
-                );
+                    // Browser does not support
+                    // assigning dropped files.
+                }
 
-            } finally {
-
-                uploadEmailButton.disabled =
-                    false;
-
-
-                uploadEmailButton.textContent =
-                    "Analyze Email";
-
-
-                emailFileInput.value = "";
-
+                handleFileSelection(file);
             }
+        );
+    }
 
-        }
+    if (analyzeSubmit) {
+
+        analyzeSubmit.addEventListener(
+            "click",
+            uploadEmail
+        );
+    }
+}
+
+
+// ========================================
+// REFRESH SETUP
+// ========================================
+
+function setupRefresh() {
+
+    if (!refreshButton) {
+        return;
+    }
+
+    refreshButton.addEventListener(
+        "click",
+        loadDashboard
     );
 }
 
@@ -836,11 +898,12 @@ function setupUpload() {
 // ========================================
 
 loadDashboard();
+
 setupUpload();
+
 setupRefresh();
 
 setInterval(
     loadDashboard,
     30000
 );
-};
